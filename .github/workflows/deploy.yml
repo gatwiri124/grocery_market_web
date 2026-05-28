@@ -15,6 +15,7 @@ jobs:
         with:
           channel: stable
       - run: flutter build web --release --base-href=/grocery_market_web/
+      - run: cp -r web/apk build/web/apk
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

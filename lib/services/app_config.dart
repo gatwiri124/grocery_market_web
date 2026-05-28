@@ -21,6 +21,14 @@ class AppConfig {
       [];
 
   String get googlePlayUrl => _data?['downloads']?['googlePlay'] as String? ?? '';
-  String get apkUrl => _data?['downloads']?['apk'] as String? ?? '';
+  String get apkUrl => _resolveUrl(_data?['downloads']?['apk'] as String? ?? '');
   String get appStoreUrl => _data?['downloads']?['appStore'] as String? ?? '';
+
+  String _resolveUrl(String url) {
+    final uri = Uri.tryParse(url);
+    if (uri != null && !uri.hasScheme && uri.path.isNotEmpty) {
+      return Uri.base.resolve(url).toString();
+    }
+    return url;
+  }
 }
