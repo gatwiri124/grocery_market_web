@@ -257,6 +257,9 @@ class _TrustStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 480;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
@@ -264,14 +267,25 @@ class _TrustStrip extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade100),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const [
-          _TrustItem(icon: Icons.verified_user, text: 'Verified local vendors'),
-          _TrustItem(icon: Icons.account_balance_wallet, text: 'M-Pesa supported'),
-          _TrustItem(icon: Icons.local_shipping, text: 'Fast delivery in Nairobi & beyond'),
-        ],
-      ),
+      child: isMobile
+          ? const Wrap(
+              spacing: 8,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                _TrustItem(icon: Icons.verified_user, text: 'Verified local vendors'),
+                _TrustItem(icon: Icons.account_balance_wallet, text: 'M-Pesa supported'),
+                _TrustItem(icon: Icons.local_shipping, text: 'Fast delivery'),
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: const [
+                _TrustItem(icon: Icons.verified_user, text: 'Verified local vendors'),
+                _TrustItem(icon: Icons.account_balance_wallet, text: 'M-Pesa supported'),
+                _TrustItem(icon: Icons.local_shipping, text: 'Fast delivery in Nairobi & beyond'),
+              ],
+            ),
     );
   }
 }

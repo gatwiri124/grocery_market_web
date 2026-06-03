@@ -11,11 +11,14 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentRoute = GoRouterState.of(context).uri.path;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
 
     return Scaffold(
+      drawer: isMobile ? _Drawer(currentRoute: currentRoute) : null,
       body: Column(
         children: [
-          _StickyHeader(currentRoute: currentRoute),
+          _Header(currentRoute: currentRoute, isMobile: isMobile),
           Expanded(
             child: Center(
               child: ConstrainedBox(
@@ -31,10 +34,11 @@ class MainLayout extends StatelessWidget {
   }
 }
 
-class _StickyHeader extends StatelessWidget {
+class _Header extends StatelessWidget {
   final String currentRoute;
+  final bool isMobile;
 
-  const _StickyHeader({required this.currentRoute});
+  const _Header({required this.currentRoute, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
@@ -53,35 +57,162 @@ class _StickyHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: _DesktopHeader(currentRoute: currentRoute),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: isMobile ? _buildMobileHeader(context) : _buildDesktopHeader(context),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _Logo(),
+        IconButton(
+          icon: const Icon(Icons.menu, color: AppTheme.darkText),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _Logo(),
+        Row(
+          children: [
+            _NavLink(label: 'Home', route: '/', isActive: currentRoute == '/'),
+            _NavLink(label: 'Download', route: '/download', isActive: currentRoute == '/download'),
+            _NavLink(label: 'Privacy Policy', route: '/privacy', isActive: currentRoute == '/privacy'),
+            _NavLink(label: 'Terms', route: '/terms', isActive: currentRoute == '/terms'),
+            _NavLink(label: 'Contact', route: '/contact', isActive: currentRoute == '/contact'),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Drawer extends StatelessWidget {
+  final String currentRoute;
+
+  const _Drawer({required this.currentRoute});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          Container(
+            decoration: const BoxDecoration(color: AppTheme.primaryGreen),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 24,
+              left: 24,
+              right: 24,
+              bottom: 24,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  AppConfig.instance.logo,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.shop, color: Colors.white, size: 24),
+                    );
+                  },
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'Fresh Grocee',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _DrawerItem(
+            icon: Icons.home,
+            label: 'Home',
+            route: '/',
+            isActive: currentRoute == '/',
+          ),
+          _DrawerItem(
+            icon: Icons.download,
+            label: 'Download',
+            route: '/download',
+            isActive: currentRoute == '/download',
+          ),
+          _DrawerItem(
+            icon: Icons.privacy_tip,
+            label: 'Privacy Policy',
+            route: '/privacy',
+            isActive: currentRoute == '/privacy',
+          ),
+          _DrawerItem(
+            icon: Icons.description,
+            label: 'Terms',
+            route: '/terms',
+            isActive: currentRoute == '/terms',
+          ),
+          _DrawerItem(
+            icon: Icons.contact_mail,
+            label: 'Contact',
+            route: '/contact',
+            isActive: currentRoute == '/contact',
+          ),
+        ],
       ),
     );
   }
 }
 
-class _DesktopHeader extends StatelessWidget {
-  final String currentRoute;
+class _DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String route;
+  final bool isActive;
 
-  const _DesktopHeader({required this.currentRoute});
+  const _DrawerItem({
+    required this.icon,
+    required this.label,
+    required this.route,
+    required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _Logo(),
-          Row(
-            children: [
-              _NavLink(label: 'Home', route: '/', isActive: currentRoute == '/'),
-              _NavLink(label: 'Download', route: '/download', isActive: currentRoute == '/download'),
-              _NavLink(label: 'Privacy Policy', route: '/privacy', isActive: currentRoute == '/privacy'),
-              _NavLink(label: 'Terms', route: '/terms', isActive: currentRoute == '/terms'),
-              _NavLink(label: 'Contact', route: '/contact', isActive: currentRoute == '/contact'),
-            ],
-          ),
-      ],
+    return ListTile(
+      leading: Icon(icon, color: isActive ? AppTheme.primaryGreen : AppTheme.lightText),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: isActive ? AppTheme.primaryGreen : AppTheme.darkText,
+          fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+          fontSize: 16,
+        ),
+      ),
+      selected: isActive,
+      selectedTileColor: AppTheme.primaryGreen.withValues(alpha: 0.05),
+      onTap: () {
+        Navigator.of(context).pop();
+        context.go(route);
+      },
     );
   }
 }
@@ -123,7 +254,7 @@ class _Logo extends StatelessWidget {
           const Text(
             'Fresh Grocee',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppTheme.darkText,
             ),
@@ -144,13 +275,13 @@ class _NavLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: GestureDetector(
         onTap: () => context.go(route),
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
             color: isActive ? AppTheme.primaryGreen : AppTheme.lightText,
           ),
@@ -167,7 +298,7 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         color: AppTheme.darkText,
       ),
@@ -175,8 +306,10 @@ class _Footer extends StatelessWidget {
         top: false,
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 12,
               children: [
                 _FooterLink(label: 'Home', route: '/'),
                 _FooterLink(label: 'Download', route: '/download'),
@@ -185,10 +318,11 @@ class _Footer extends StatelessWidget {
                 _FooterLink(label: 'Contact', route: '/contact'),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             const Text(
               '© 2024 Fresh Grocee. All rights reserved.',
-              style: TextStyle(color: Colors.white54, fontSize: 14),
+              style: TextStyle(color: Colors.white54, fontSize: 13),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -205,14 +339,11 @@ class _FooterLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        onTap: () => context.go(route),
-        child: Text(
-          label,
-          style: const TextStyle(color: Colors.white54, fontSize: 14),
-        ),
+    return GestureDetector(
+      onTap: () => context.go(route),
+      child: Text(
+        label,
+        style: const TextStyle(color: Colors.white54, fontSize: 13),
       ),
     );
   }

@@ -85,131 +85,101 @@ class FeaturesPage extends StatelessWidget {
     String imagePath, {
     required bool isImageFirst,
   }) {
-    final content = Row(
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isImageFirst) ...[
+            _buildFeatureImage(imagePath),
+            const SizedBox(height: 16),
+            _buildFeatureContent(context, icon, title, description),
+          ] else ...[
+            _buildFeatureContent(context, icon, title, description),
+            const SizedBox(height: 16),
+            _buildFeatureImage(imagePath),
+          ],
+        ],
+      );
+    }
+
+    if (isImageFirst) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: _buildFeatureImage(imagePath)),
+          const SizedBox(width: 24),
+          Expanded(child: _buildFeatureContent(context, icon, title, description)),
+        ],
+      );
+    }
+
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  size: 32,
-                  color: AppTheme.primaryGreen,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-        ),
+        Expanded(child: _buildFeatureContent(context, icon, title, description)),
         const SizedBox(width: 24),
-        Expanded(
-          child: Image.asset(
-            imagePath,
+        Expanded(child: _buildFeatureImage(imagePath)),
+      ],
+    );
+  }
+
+  Widget _buildFeatureImage(String imagePath) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(
+        imagePath,
+        width: double.infinity,
+        height: 200,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
             width: double.infinity,
             height: 200,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: double.infinity,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: AppTheme.secondaryGreen.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    AppConfig.instance.logo,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              );
-            },
+            decoration: BoxDecoration(
+              color: AppTheme.secondaryGreen.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Image.asset(
+                AppConfig.instance.logo,
+                width: 60,
+                height: 60,
+                fit: BoxFit.contain,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFeatureContent(BuildContext context, IconData icon, String title, String description) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
           ),
+          child: Icon(icon, size: 32, color: AppTheme.primaryGreen),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          description,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );
-
-    return isImageFirst
-        ? Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: double.infinity,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: AppTheme.secondaryGreen.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          AppConfig.instance.logo,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        icon,
-                        size: 32,
-                        color: AppTheme.primaryGreen,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
-        : content;
   }
 
   Widget _buildDownloadCTA(BuildContext context) {
