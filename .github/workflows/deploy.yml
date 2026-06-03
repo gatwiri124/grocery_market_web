@@ -14,7 +14,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: flutter build web --release --base-href=/grocery_market_web/
+      - run: flutter build web --release --base-href="/"
       - run: cp -r web/apk build/web/apk
       - uses: peaceiris/actions-gh-pages@v4
         with:
