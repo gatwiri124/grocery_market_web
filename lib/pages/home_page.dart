@@ -19,7 +19,9 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 48),
             const _TrustStrip(),
             const SizedBox(height: 64),
-            const _WhatIsSection(),
+            const _ProblemSection(),
+            const SizedBox(height: 64),
+            const _SolutionSection(),
             const SizedBox(height: 64),
             const _HowItWorksSection(),
             const SizedBox(height: 64),
@@ -78,7 +80,7 @@ class _HeroContent extends StatelessWidget {
         Text(
           'Fresh Grocee — Groceries delivered fast across Kenya',
           style: TextStyle(
-            fontSize: isMobile ? 28 : 40,
+            fontSize: isMobile ? 28 : 48,
             fontWeight: FontWeight.bold,
             color: AppTheme.darkText,
             height: 1.2,
@@ -179,7 +181,7 @@ class _HeroImage extends StatelessWidget {
       onTap: () => _showFullScreenImage(context, AppConfig.instance.heroPromo),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -189,7 +191,7 @@ class _HeroImage extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(32),
           child: Image.asset(
             AppConfig.instance.heroPromo,
             width: double.infinity,
@@ -201,7 +203,7 @@ class _HeroImage extends StatelessWidget {
                 height: 350,
                 decoration: BoxDecoration(
                   color: AppTheme.white,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(32),
                 ),
                 child: Image.asset(
                   AppConfig.instance.logo,
@@ -319,73 +321,186 @@ class _TrustItem extends StatelessWidget {
   }
 }
 
-class _WhatIsSection extends StatelessWidget {
-  const _WhatIsSection();
+class _ProblemSection extends StatelessWidget {
+  const _ProblemSection();
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+
     return Column(
       children: [
-        const Text(
-          'What is Fresh Grocee?',
+        Text(
+          'The Problem',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: AppTheme.darkText,
           ),
         ),
-        const SizedBox(height: 20),
-        Container(
-          padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: AppTheme.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: 24),
+        if (isMobile)
+          Column(
             children: [
-              _SectionTitle(title: 'The Problem', color: Colors.orange),
-              SizedBox(height: 8),
-              Text(
-                'Long queues at the market, unreliable delivery times, and difficulty finding fresh produce when you need it. Traditional grocery shopping takes valuable time out of your busy day.',
-                style: TextStyle(fontSize: 16, color: AppTheme.lightText, height: 1.6),
-              ),
-              SizedBox(height: 20),
-              _SectionTitle(title: 'The Solution', color: AppTheme.primaryGreen),
-              SizedBox(height: 8),
-              Text(
-                'Fresh Grocee is a fast, digital grocery marketplace connecting you with verified local vendors. Browse fresh produce, compare prices, and order in seconds — delivery comes to your doorstep within hours.',
-                style: TextStyle(fontSize: 16, color: AppTheme.lightText, height: 1.6),
-              ),
+              _buildDescription(),
+              const SizedBox(height: 24),
+              _buildProblemImage(),
+            ],
+          )
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: _buildDescription()),
+              const SizedBox(width: 48),
+              Expanded(child: _buildProblemImage()),
             ],
           ),
-        ),
       ],
+    );
+  }
+
+  Widget _buildDescription() {
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppTheme.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Long queues at the market, unreliable delivery times, and difficulty finding fresh produce when you need it. Traditional grocery shopping takes valuable time out of your busy day.',
+            style: TextStyle(fontSize: 16, color: AppTheme.darkText, height: 1.6),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProblemImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Image.asset(
+        AppConfig.instance.problem,
+        width: double.infinity,
+        height: 300,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: double.infinity,
+            height: 300,
+            decoration: BoxDecoration(
+              color: AppTheme.lightGreen.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(
+              child: Icon(Icons.error_outline, size: 60, color: Colors.white54),
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  final Color color;
-
-  const _SectionTitle({required this.title, required this.color});
+class _SolutionSection extends StatelessWidget {
+  const _SolutionSection();
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: color,
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+
+    return Column(
+      children: [
+        Text(
+          'The Solution',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.darkText,
+          ),
+        ),
+        const SizedBox(height: 24),
+        if (isMobile)
+          Column(
+            children: [
+              _buildSolutionCard(AppConfig.instance.solution1, 'For Vendors & Sellers'),
+              const SizedBox(height: 16),
+              _buildSolutionCard(AppConfig.instance.solution2, 'For Buyers'),
+            ],
+          )
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildSolutionCard(AppConfig.instance.solution1, 'For Vendors & Sellers')),
+              const SizedBox(width: 24),
+              Expanded(child: _buildSolutionCard(AppConfig.instance.solution2, 'For Buyers')),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSolutionCard(String imagePath, String label) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              imagePath,
+              width: double.infinity,
+              height: 280,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: double.infinity,
+                  height: 280,
+                  decoration: BoxDecoration(
+                    color: AppTheme.lightGreen.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.image, size: 60, color: Colors.white54),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.darkText,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -401,10 +516,10 @@ class _HowItWorksSection extends StatelessWidget {
 
     return Column(
       children: [
-        const Text(
+        Text(
           'How It Works',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: AppTheme.darkText,
           ),
@@ -517,10 +632,10 @@ class _FeatureHighlights extends StatelessWidget {
 
     return Column(
       children: [
-        const Text(
+        Text(
           'Why Choose Fresh Grocee?',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: AppTheme.darkText,
           ),
@@ -605,14 +720,14 @@ class _AppPreviewSection extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
 
-      final images = AppConfig.instance.screenshots;
+    final images = AppConfig.instance.screenshots;
 
     return Column(
       children: [
-        const Text(
+        Text(
           'App Preview',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: AppTheme.darkText,
           ),
@@ -723,7 +838,7 @@ class _FinalCTASection extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'Download Fresh Grocee and get fresh groceries delivered to your door',
             style: TextStyle(
@@ -732,8 +847,8 @@ class _FinalCTASection extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 32),
-Wrap(
+          const SizedBox(height: 32),
+          Wrap(
             spacing: 16,
             runSpacing: 12,
             alignment: WrapAlignment.center,

@@ -20,6 +20,10 @@ class AppConfig {
           .toList() ??
       [];
 
+  String get problem => _data?['problem'] as String? ?? 'assets/images/problem.png';
+  String get solution1 => _data?['solution1'] as String? ?? 'assets/images/solution1.png';
+  String get solution2 => _data?['solution2'] as String? ?? 'assets/images/solution2.png';
+
   String get googlePlayUrl => _data?['downloads']?['googlePlay'] as String? ?? '';
   String get apkUrl => _resolveUrl(_data?['downloads']?['apk'] as String? ?? '');
   String get appStoreUrl => _data?['downloads']?['appStore'] as String? ?? '';

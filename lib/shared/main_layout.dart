@@ -22,7 +22,7 @@ class MainLayout extends StatelessWidget {
           Expanded(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 1000),
                 child: child,
               ),
             ),

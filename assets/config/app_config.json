@@ -1,6 +1,9 @@
 {
   "logo": "assets/images/logo.png",
-  "heroPromo": "assets/images/promo1.png",
+  "heroPromo": "assets/images/promo.png",
+  "problem": "assets/images/problem.png",
+  "solution1": "assets/images/solution1.png",
+  "solution2": "assets/images/solution2.png",
   "screenshots": [
     "assets/images/Screen1.png",
     "assets/images/Screen2.png",
