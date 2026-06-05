@@ -48,20 +48,9 @@ class _HeroSection extends StatelessWidget {
 
     return Column(
       children: [
-        if (isMobile) ...[
-          const _HeroContent(isMobile: true),
-          const SizedBox(height: 32),
-          const _HeroImage(),
-        ] else ...[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Expanded(child: _HeroContent(isMobile: false)),
-              const SizedBox(width: 48),
-              const Expanded(child: _HeroImage()),
-            ],
-          ),
-        ],
+        _HeroContent(isMobile: isMobile),
+        const SizedBox(height: 48),
+        const _HeroImage(),
       ],
     );
   }
@@ -78,7 +67,7 @@ class _HeroContent extends StatelessWidget {
       crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
-          'Fresh Grocee — Groceries delivered fast across Kenya',
+          'Fresh Grocees',
           style: TextStyle(
             fontSize: isMobile ? 28 : 48,
             fontWeight: FontWeight.bold,
