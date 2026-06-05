@@ -46,114 +46,98 @@ class _HeroSection extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  AppConfig.instance.heroPromo,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                      child: Center(
-                        child: Image.asset(
-                          AppConfig.instance.logo,
-                          width: 80,
-                          height: 80,
-                  fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.4),
-                        Colors.black.withValues(alpha: 0.7),
-                      ],
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              AppConfig.instance.heroPromo,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                  child: Center(
+                    child: Image.asset(
+                      AppConfig.instance.logo,
+                      width: 80,
+                      height: 80,
                     ),
                   ),
+                );
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.black.withValues(alpha: 0.7),
+                  ],
                 ),
               ),
-              Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    isMobile ? 24 : 48,
-                    isMobile ? 16 : 32,
-                    isMobile ? 24 : 48,
-                    isMobile ? 24 : 48,
+            ),
+          ),
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                isMobile ? 24 : 48,
+                isMobile ? 16 : 32,
+                isMobile ? 24 : 48,
+                isMobile ? 24 : 48,
+              ),
+              child: Column(
+                crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                children: [
+                  const Spacer(),
+                  Text(
+                    'Fresh Grocees',
+                    style: TextStyle(
+                      fontSize: isMobile ? 28 : 48,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                    textAlign: isMobile ? TextAlign.center : TextAlign.left,
                   ),
-                  child: Column(
-                    crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                  const SizedBox(height: 16),
+                  Text(
+                    'Order fresh food from local markets and get it delivered to your doorstep via M-Pesa.',
+                    style: TextStyle(
+                      fontSize: isMobile ? 16 : 18,
+                      color: Colors.white.withValues(alpha: 0.9),
+                      height: 1.5,
+                    ),
+                    textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                  ),
+                  const SizedBox(height: 32),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 12,
+                    alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
                     children: [
-                      const Spacer(),
-                      Text(
-                        'Fresh Grocees',
-                        style: TextStyle(
-                          fontSize: isMobile ? 28 : 48,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1.2,
-                        ),
-                        textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                      _StoreButton(
+                        icon: Icons.play_arrow_rounded,
+                        label: 'Google Play',
+                        onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Order fresh food from local markets and get it delivered to your doorstep via M-Pesa.',
-                        style: TextStyle(
-                          fontSize: isMobile ? 16 : 18,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.5,
-                        ),
-                        textAlign: isMobile ? TextAlign.center : TextAlign.left,
-                      ),
-                      const SizedBox(height: 32),
-                      Wrap(
-                        spacing: 16,
-                        runSpacing: 12,
-                        alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
-                        children: [
-                          _StoreButton(
-                            icon: Icons.play_arrow_rounded,
-                            label: 'Google Play',
-                            onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
-                          ),
-                          _StoreButton(
-                            icon: Icons.download_rounded,
-                            label: 'Download APK',
-                            isPrimary: false,
-                            onTap: () => launchUrl(Uri.parse(AppConfig.instance.apkUrl)),
-                          ),
-                        ],
+                      _StoreButton(
+                        icon: Icons.download_rounded,
+                        label: 'Download APK',
+                        isPrimary: false,
+                        onTap: () => launchUrl(Uri.parse(AppConfig.instance.apkUrl)),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
