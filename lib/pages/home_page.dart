@@ -47,10 +47,23 @@ class _HeroSection extends StatelessWidget {
     final isMobile = screenWidth < 768;
     final heroHeight = isMobile ? 400.0 : 600.0;
 
-    return SizedBox(
-      width: double.infinity,
-      height: heroHeight,
-      child: Stack(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: SizedBox(
+          width: double.infinity,
+          height: heroHeight,
+          child: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
@@ -139,7 +152,9 @@ class _HeroSection extends StatelessWidget {
               ),
             ),
           ),
-        ],
+          ],
+        ),
+      ),
       ),
     );
   }
