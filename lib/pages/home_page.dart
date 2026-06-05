@@ -45,9 +45,11 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
+    final heroHeight = isMobile ? 400.0 : 600.0;
 
-    return AspectRatio(
-      aspectRatio: 16 / 9,
+    return SizedBox(
+      width: double.infinity,
+      height: heroHeight,
       child: Stack(
         children: [
           Positioned.fill(
