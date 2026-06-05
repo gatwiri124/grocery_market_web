@@ -46,66 +46,110 @@ class _HeroSection extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
 
-    return Column(
-      children: [
-        _HeroContent(isMobile: isMobile),
-        const SizedBox(height: 48),
-        const _HeroImage(),
-      ],
-    );
-  }
-}
-
-class _HeroContent extends StatelessWidget {
-  final bool isMobile;
-
-  const _HeroContent({required this.isMobile});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Fresh Grocees',
-          style: TextStyle(
-            fontSize: isMobile ? 28 : 48,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.darkText,
-            height: 1.2,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
-          textAlign: isMobile ? TextAlign.center : TextAlign.left,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Order fresh food from local markets and get it delivered to your doorstep via M-Pesa.',
-          style: TextStyle(
-            fontSize: isMobile ? 16 : 18,
-            color: AppTheme.lightText,
-            height: 1.5,
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  AppConfig.instance.heroPromo,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                      child: Center(
+                        child: Image.asset(
+                          AppConfig.instance.logo,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.4),
+                        Colors.black.withValues(alpha: 0.7),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: Padding(
+                  padding: EdgeInsets.all(isMobile ? 24 : 48),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fresh Grocees',
+                        style: TextStyle(
+                          fontSize: isMobile ? 28 : 48,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                        textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Order fresh food from local markets and get it delivered to your doorstep via M-Pesa.',
+                        style: TextStyle(
+                          fontSize: isMobile ? 16 : 18,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.5,
+                        ),
+                        textAlign: isMobile ? TextAlign.center : TextAlign.left,
+                      ),
+                      const SizedBox(height: 32),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 12,
+                        alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+                        children: [
+                          _StoreButton(
+                            icon: Icons.play_arrow_rounded,
+                            label: 'Google Play',
+                            onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
+                          ),
+                          _StoreButton(
+                            icon: Icons.download_rounded,
+                            label: 'Download APK',
+                            isPrimary: false,
+                            onTap: () => launchUrl(Uri.parse(AppConfig.instance.apkUrl)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          textAlign: isMobile ? TextAlign.center : TextAlign.left,
         ),
-        const SizedBox(height: 32),
-        Wrap(
-          spacing: 16,
-          runSpacing: 12,
-          alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
-          children: [
-            _StoreButton(
-              icon: Icons.play_arrow_rounded,
-              label: 'Google Play',
-              onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
-            ),
-            _StoreButton(
-              icon: Icons.download_rounded,
-              label: 'Download APK',
-              isPrimary: false,
-              onTap: () => launchUrl(Uri.parse(AppConfig.instance.apkUrl)),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }
@@ -161,64 +205,6 @@ class _StoreButton extends StatelessWidget {
   }
 }
 
-class _HeroImage extends StatelessWidget {
-  const _HeroImage();
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showFullScreenImage(context, AppConfig.instance.heroPromo),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(32),
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.asset(
-              AppConfig.instance.heroPromo,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppTheme.white,
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: Image.asset(
-                    AppConfig.instance.logo,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.contain,
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showFullScreenImage(BuildContext context, String imagePath) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _FullScreenImageViewer(imagePath: imagePath),
-      ),
-    );
-  }
-}
 
 class _FullScreenImageViewer extends StatelessWidget {
   final String imagePath;
