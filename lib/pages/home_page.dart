@@ -192,27 +192,30 @@ class _HeroImage extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
-          child: Image.asset(
-            AppConfig.instance.heroPromo,
-            width: double.infinity,
-            height: 350,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: double.infinity,
-                height: 350,
-                decoration: BoxDecoration(
-                  color: AppTheme.white,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Image.asset(
-                  AppConfig.instance.logo,
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.contain,
-                ),
-              );
-            },
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Image.asset(
+              AppConfig.instance.heroPromo,
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppTheme.white,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: Image.asset(
+                    AppConfig.instance.logo,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.contain,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
