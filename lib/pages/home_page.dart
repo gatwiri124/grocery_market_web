@@ -66,7 +66,7 @@ class _HeroSection extends StatelessWidget {
               Positioned.fill(
                 child: Image.asset(
                   AppConfig.instance.heroPromo,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: AppTheme.primaryGreen.withValues(alpha: 0.1),
@@ -98,11 +98,16 @@ class _HeroSection extends StatelessWidget {
               ),
               Positioned.fill(
                 child: Padding(
-                  padding: EdgeInsets.all(isMobile ? 24 : 48),
+                  padding: EdgeInsets.fromLTRB(
+                    isMobile ? 24 : 48,
+                    isMobile ? 16 : 32,
+                    isMobile ? 24 : 48,
+                    isMobile ? 24 : 48,
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                     children: [
+                      const Spacer(),
                       Text(
                         'Fresh Grocees',
                         style: TextStyle(
