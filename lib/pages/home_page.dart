@@ -75,7 +75,7 @@ class _HeroSection extends StatelessWidget {
                           AppConfig.instance.logo,
                           width: 80,
                           height: 80,
-                          fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                         ),
                       ),
                     );
