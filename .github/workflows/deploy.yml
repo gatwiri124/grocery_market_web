@@ -2,21 +2,35 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [ main ] # Runs every time you push to main
+
+permissions:
+  contents: write # Essential for the action to push to the gh-pages branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      # 1. Checkout your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup the Flutter environment
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          channel: stable
-      - run: flutter build web --release --base-href="/"
-      - run: cp -r web/apk build/web/apk
-      - uses: peaceiris/actions-gh-pages@v4
+          channel: 'stable'
+          # flutter-version: '3.x' # Optional: lock to a specific version
+
+      # 3. Get dependencies and build the web app
+      - name: Build Web
+        run: |
+          flutter pub get
+          flutter build web --release --base-href "/grocery_market_web/"
+
+      # 4. Deploy to the gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
+          publish_dir: ./build/web

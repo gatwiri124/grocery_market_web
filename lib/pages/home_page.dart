@@ -9,30 +9,31 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 48),
-            const _HeroSection(),
-            const SizedBox(height: 48),
-            const _TrustStrip(),
-            const SizedBox(height: 64),
-            const _ProblemSection(),
-            const SizedBox(height: 64),
-            const _SolutionSection(),
-            const SizedBox(height: 64),
-            const _HowItWorksSection(),
-            const SizedBox(height: 64),
-            const _FeatureHighlights(),
-            const SizedBox(height: 64),
-            const _AppPreviewSection(),
-            const SizedBox(height: 64),
-            const _FinalCTASection(),
-            const SizedBox(height: 48),
-          ],
-        ),
+      child: Column(
+        children: [
+          const _HeroSection(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 48),
+                const _TrustStrip(),
+                const SizedBox(height: 64),
+                const _SolutionSection(),
+                const SizedBox(height: 64),
+                const _HowItWorksSection(),
+                const SizedBox(height: 64),
+                const _FeatureHighlights(),
+                const SizedBox(height: 64),
+                const _AppPreviewSection(),
+                const SizedBox(height: 64),
+                const _FinalCTASection(),
+                const SizedBox(height: 48),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -45,59 +46,47 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
-    final heroHeight = isMobile ? 400.0 : 600.0;
+    final heroHeight = isMobile ? 450.0 : 650.0;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: SizedBox(
-          width: double.infinity,
-          height: heroHeight,
-          child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              AppConfig.instance.heroPromo,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                  child: Center(
-                    child: Image.asset(
-                      AppConfig.instance.logo,
-                      width: 80,
-                      height: 80,
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 1000),
+        height: heroHeight,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                AppConfig.instance.heroPromo,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    child: Center(
+                      child: Image.asset(
+                        AppConfig.instance.logo,
+                        width: 80,
+                        height: 80,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.4),
-                    Colors.black.withValues(alpha: 0.7),
-                  ],
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Colors.black54,
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned.fill(
+            Positioned.fill(
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 isMobile ? 24 : 48,
@@ -135,11 +124,13 @@ class _HeroSection extends StatelessWidget {
                     runSpacing: 12,
                     alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
                     children: [
-                      _StoreButton(
-                        icon: Icons.play_arrow_rounded,
-                        label: 'Google Play',
-                        onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
-                      ),
+                      if (!isMobile)
+                        _StoreButton(
+                          icon: Icons.play_arrow_rounded,
+                          label: 'Google Play',
+                          isDisabled: true,
+                          onTap: null,
+                        ),
                       _StoreButton(
                         icon: Icons.download_rounded,
                         label: 'Download APK',
@@ -155,7 +146,6 @@ class _HeroSection extends StatelessWidget {
           ],
         ),
       ),
-      ),
     );
   }
 }
@@ -164,42 +154,46 @@ class _StoreButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isPrimary;
+  final bool isDisabled;
   final VoidCallback? onTap;
 
   const _StoreButton({
     required this.icon,
     required this.label,
     this.isPrimary = true,
+    this.isDisabled = false,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         decoration: BoxDecoration(
-          color: isPrimary ? AppTheme.primaryGreen : AppTheme.white,
+          color: isDisabled ? Colors.grey.shade300 : (isPrimary ? AppTheme.primaryGreen : AppTheme.white),
           borderRadius: BorderRadius.circular(12),
-          border: isPrimary ? null : Border.all(color: AppTheme.primaryGreen, width: 2),
-          boxShadow: isPrimary ? [
+          border: isDisabled
+              ? Border.all(color: Colors.grey.shade300, width: 2)
+              : (isPrimary ? null : Border.all(color: AppTheme.primaryGreen, width: 2)),
+          boxShadow: (isDisabled || !isPrimary) ? null : [
             BoxShadow(
               color: AppTheme.primaryGreen.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
-          ] : null,
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isPrimary ? AppTheme.white : AppTheme.primaryGreen, size: 24),
+            Icon(icon, color: isDisabled ? Colors.grey.shade500 : (isPrimary ? AppTheme.white : AppTheme.primaryGreen), size: 24),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
-                color: isPrimary ? AppTheme.white : AppTheme.primaryGreen,
+                color: isDisabled ? Colors.grey.shade500 : (isPrimary ? AppTheme.white : AppTheme.primaryGreen),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -305,98 +299,6 @@ class _TrustItem extends StatelessWidget {
   }
 }
 
-class _ProblemSection extends StatelessWidget {
-  const _ProblemSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
-
-    return Column(
-      children: [
-        Text(
-          'The Problem',
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.darkText,
-          ),
-        ),
-        const SizedBox(height: 24),
-        if (isMobile)
-          Column(
-            children: [
-              _buildDescription(),
-              const SizedBox(height: 24),
-              _buildProblemImage(),
-            ],
-          )
-        else
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(child: _buildDescription()),
-              const SizedBox(width: 48),
-              Expanded(child: _buildProblemImage()),
-            ],
-          ),
-      ],
-    );
-  }
-
-  Widget _buildDescription() {
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: AppTheme.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Long queues at the market, unreliable delivery times, and difficulty finding fresh produce when you need it. Traditional grocery shopping takes valuable time out of your busy day.',
-            style: TextStyle(fontSize: 16, color: AppTheme.darkText, height: 1.6),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProblemImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Image.asset(
-        AppConfig.instance.problem,
-        width: double.infinity,
-        height: 300,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            width: double.infinity,
-            height: 300,
-            decoration: BoxDecoration(
-              color: AppTheme.lightGreen.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Center(
-              child: Icon(Icons.error_outline, size: 60, color: Colors.white54),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 class _SolutionSection extends StatelessWidget {
   const _SolutionSection();
 
@@ -415,77 +317,126 @@ class _SolutionSection extends StatelessWidget {
             color: AppTheme.darkText,
           ),
         ),
-        const SizedBox(height: 24),
-        if (isMobile)
-          Column(
-            children: [
-              _buildSolutionCard(AppConfig.instance.solution1, 'For Vendors & Sellers'),
-              const SizedBox(height: 16),
-              _buildSolutionCard(AppConfig.instance.solution2, 'For Buyers'),
-            ],
-          )
-        else
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: _buildSolutionCard(AppConfig.instance.solution1, 'For Vendors & Sellers')),
-              const SizedBox(width: 24),
-              Expanded(child: _buildSolutionCard(AppConfig.instance.solution2, 'For Buyers')),
-            ],
-          ),
+        const SizedBox(height: 32),
+        _buildSolutionRow(
+          imagePath: AppConfig.instance.solution1,
+          title: 'For Vendors & Sellers',
+          bullets: [
+            'Register your shop in minutes',
+            'List and manage your products',
+            'Receive real-time order notifications',
+            'Get paid securely via M-Pesa',
+            'Reach more customers in your area',
+          ],
+          imageOnLeft: true,
+          isMobile: isMobile,
+        ),
+        const SizedBox(height: 48),
+        _buildSolutionRow(
+          imagePath: AppConfig.instance.solution2,
+          title: 'For Buyers',
+          bullets: [
+            'Browse fresh produce from local vendors',
+            'Place orders in just a few taps',
+            'Pay conveniently with M-Pesa',
+            'Track delivery in real-time',
+            'Enjoy guaranteed freshness',
+          ],
+          imageOnLeft: false,
+          isMobile: isMobile,
+        ),
       ],
     );
   }
 
-  Widget _buildSolutionCard(String imagePath, String label) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+  Widget _buildSolutionRow({
+    required String imagePath,
+    required String title,
+    required List<String> bullets,
+    required bool imageOnLeft,
+    required bool isMobile,
+  }) {
+    final imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Image.asset(
+        imagePath,
+        width: double.infinity,
+        height: 300,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: double.infinity,
+            height: 300,
+            decoration: BoxDecoration(
+              color: AppTheme.lightGreen.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(
+              child: Icon(Icons.image, size: 60, color: Colors.white54),
+            ),
+          );
+        },
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    );
+
+    final descriptionWidget = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.darkText,
+          ),
+        ),
+        const SizedBox(height: 16),
+        ...bullets.map((bullet) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  bullet,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: AppTheme.darkText,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )),
+      ],
+    );
+
+    if (isMobile) {
+      return Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              imagePath,
-              width: double.infinity,
-              height: 280,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: double.infinity,
-                  height: 280,
-                  decoration: BoxDecoration(
-                    color: AppTheme.lightGreen.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.image, size: 60, color: Colors.white54),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppTheme.darkText,
-            ),
-          ),
+          imageWidget,
+          const SizedBox(height: 24),
+          descriptionWidget,
         ],
-      ),
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (imageOnLeft) ...[
+          Expanded(flex: 3, child: imageWidget),
+          const SizedBox(width: 40),
+          Expanded(flex: 2, child: descriptionWidget),
+        ] else ...[
+          Expanded(flex: 2, child: descriptionWidget),
+          const SizedBox(width: 40),
+          Expanded(flex: 3, child: imageWidget),
+        ],
+      ],
     );
   }
 }
@@ -608,8 +559,6 @@ class _FeatureHighlights extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final features = [
-      {'icon': Icons.eco, 'title': 'Fresh produce daily', 'desc': 'Sourced directly from local farms'},
-      {'icon': Icons.attach_money, 'title': 'Affordable prices', 'desc': 'Compare and save on every order'},
       {'icon': Icons.store, 'title': 'Local Kenyan sellers', 'desc': 'Support your community'},
       {'icon': Icons.location_on, 'title': 'Fast delivery tracking', 'desc': 'Know exactly when it arrives'},
     ];
@@ -718,11 +667,14 @@ class _AppPreviewSection extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         isMobile
-            ? Column(
-                children: images.map((img) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _AppScreenshot(imagePath: img),
-                )).toList(),
+            ? GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.6,
+                children: images.map((img) => _AppScreenshot(imagePath: img)).toList(),
               )
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -794,6 +746,9 @@ class _FinalCTASection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768;
+
     return Container(
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
@@ -837,11 +792,13 @@ class _FinalCTASection extends StatelessWidget {
             runSpacing: 12,
             alignment: WrapAlignment.center,
             children: [
-              _StoreButton(
-                icon: Icons.play_arrow_rounded,
-                label: 'Google Play',
-                onTap: () => launchUrl(Uri.parse(AppConfig.instance.googlePlayUrl)),
-              ),
+              if (!isMobile)
+                _StoreButton(
+                  icon: Icons.play_arrow_rounded,
+                  label: 'Google Play',
+                  isDisabled: true,
+                  onTap: null,
+                ),
               _StoreButton(
                 icon: Icons.download_rounded,
                 label: 'Download APK',
